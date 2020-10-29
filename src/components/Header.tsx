@@ -1,7 +1,8 @@
-import React, {useState} from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import {Heading} from './Heading'
 import {Switch} from './Switch'
+import {useDarkMode} from './useDarkMode'
 
 const Container = styled.div`
     display: flex;
@@ -12,7 +13,7 @@ const Container = styled.div`
 `
 
 export const Header: React.FC = () => {
-    const [darkMode, setDarkMode] = useState(false)
+    const [darkMode, setDarkMode] = useDarkMode()
 
     return (
         <Container>
