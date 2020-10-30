@@ -64,21 +64,24 @@ const Strikethrough = styled.div<{checked: boolean}>`
         `};
 `
 
-export const Task: React.FC<{label: string; complete: boolean}> = ({
-    label,
-    complete,
-}) => {
+export type Task = {
+    id: number
+    label: string
+    completed: boolean
+}
+
+export const Task: React.FC<{task: Task}> = ({task}) => {
     return (
         <Container onClick={() => {}}>
-            <Check checked={complete}>
+            <Check checked={task.completed}>
                 <CheckIcon
                     src={checkIconSvg}
-                    style={{opacity: complete ? 1 : 0}}
+                    style={{opacity: task.completed ? 1 : 0}}
                 />
             </Check>
             <Label>
-                {label}
-                <Strikethrough checked={complete} />
+                {task.label}
+                <Strikethrough checked={task.completed} />
             </Label>
         </Container>
     )
