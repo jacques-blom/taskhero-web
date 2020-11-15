@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import styled from 'styled-components'
-import useFetch from 'use-http'
-import {Container as TaskContainer, TextStyle as TaskTextStyle} from './Task'
+import {mutate} from 'swr'
+import {insertTask} from './api'
+import {Container as TaskContainer, Task, TextStyle as TaskTextStyle} from './Task'
 
 const InsertInput = styled.input`
     width: 100%;
@@ -21,15 +22,6 @@ const InsertInput = styled.input`
 
 export const Input: React.FC = () => {
     const [label, setLabel] = useState('')
-    const [loading, setLoading] = useState(false)
-
-    const {post, response} = useFetch('http://localhost:8080/tasks', {
-        onError: ({error}) => {
-            console.log(error)
-        },
-    })
-
-    console.log({loading})
 
     return (
         <TaskContainer>
@@ -43,12 +35,11 @@ export const Input: React.FC = () => {
                 }}
                 onKeyUp={async ({keyCode}) => {
                     if (keyCode === 13) {
-                        setLoading(true)
-                        await post({label})
-                        if (response.ok) {
+                        try {
+                            const newTask = await insertTask({label})
+                            await mutate('/tasks', (tasks: Task[]) => [...tasks, newTask], false)
                             setLabel('')
-                        }
-                        setLoading(false)
+                        } catch (error) {}
                     }
                 }}
             />

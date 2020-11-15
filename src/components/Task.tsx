@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import styled, {css} from 'styled-components'
 import checkIconSvg from './check.svg'
 import {Card} from './Card'
@@ -70,14 +70,11 @@ export type Task = {
     completed: boolean
 }
 
-export const Task: React.FC<{task: Task}> = ({task}) => {
+export const Task: React.FC<{task: Task; testId: string}> = ({task, testId}) => {
     return (
-        <Container onClick={() => {}}>
+        <Container onClick={() => {}} data-testid={testId}>
             <Check checked={task.completed}>
-                <CheckIcon
-                    src={checkIconSvg}
-                    style={{opacity: task.completed ? 1 : 0}}
-                />
+                <CheckIcon src={checkIconSvg} style={{opacity: task.completed ? 1 : 0}} />
             </Check>
             <Label>
                 {task.label}

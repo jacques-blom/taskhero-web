@@ -3,21 +3,25 @@ import {Input} from './components/Input'
 import {ThemeProvider, GlobalStyles, Page} from './components/theme'
 import {Header} from './components/Header'
 import {useDarkMode} from './components/useDarkMode'
-import {useFetch} from 'use-http'
 import {Task} from './components/Task'
+import useSWR from 'swr'
 
 const Home = () => {
-    const {loading, error, data = []} = useFetch<Task[]>('http://localhost:8080/tasks', {}, [])
+    const {error, data} = useSWR<Task[]>('/tasks')
 
-    if (loading) return <div>Loading...</div>
-    if (error) return <div>Error: {error.message}</div>
+    if (error) return <div data-testid="error">Error: {error.message}</div>
+    if (!data) return <div data-testid="loading">Loading...</div>
 
     return (
         <Page>
             <Header />
-            {[].map((task: any) => (
-                <Task key={task.id} task={task} />
-            ))}
+            {data.length === 0 ? (
+                <div data-testid="notasks">No Tasks Yet</div>
+            ) : (
+                data.map((task) => {
+                    return <Task testId={`task-${task.id}`} key={task.id} task={task} />
+                })
+            )}
             <Input />
         </Page>
     )
