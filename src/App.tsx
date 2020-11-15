@@ -5,9 +5,11 @@ import {Header} from './components/Header'
 import {useDarkMode} from './components/useDarkMode'
 import {Task} from './components/Task'
 import useSWR from 'swr'
+import {useUserId} from './components/useUserId'
 
 const Home = () => {
-    const {error, data} = useSWR<Task[]>('/tasks')
+    const userId = useUserId()
+    const {error, data} = useSWR<Task[]>(`/tasks/?userId=${userId}`)
 
     if (error) return <div data-testid="error">Error: {error.message}</div>
     if (!data) return <div data-testid="loading">Loading...</div>

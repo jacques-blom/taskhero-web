@@ -5,6 +5,7 @@
 import '@testing-library/jest-dom/extend-expect'
 import {cache} from 'swr'
 import {server} from './mocks/server'
+import 'jest-localstorage-mock'
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen())
