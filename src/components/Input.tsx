@@ -39,9 +39,11 @@ export const Input: React.FC = () => {
                     if (keyCode === 13) {
                         try {
                             const newTask = await insertTask({label, userId})
-                            await mutate('/tasks', (tasks: Task[]) => [...tasks, newTask], false)
+                            await mutate(`/tasks/?userId=${userId}`, (tasks: Task[]) => [...tasks, newTask], false)
                             setLabel('')
-                        } catch (error) {}
+                        } catch (error) {
+                            console.log('errr', error)
+                        }
                     }
                 }}
             />
