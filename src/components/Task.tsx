@@ -30,7 +30,7 @@ const Check = styled.div<{checked: boolean}>`
         `}
 `
 
-export const Container = styled(Card)<{loading?: boolean}>`
+export const Container = styled(Card)<{isLoading?: boolean}>`
     height: 50px;
     margin-bottom: 20px;
     display: flex;
@@ -38,7 +38,7 @@ export const Container = styled(Card)<{loading?: boolean}>`
     align-items: center;
 
     ${(props) =>
-        props.loading &&
+        props.isLoading &&
         css`
             pointer-events: none;
             opacity: 0.5;
@@ -105,7 +105,7 @@ export const Task: React.FC<{task: Task; testId: string}> = ({task, testId}) => 
                 setLoading(false)
             }}
             data-testid={testId}
-            loading={loading}
+            isLoading={loading}
         >
             <Check checked={task.completed}>
                 <CheckIcon src={checkIconSvg} style={{opacity: task.completed ? 1 : 0}} />

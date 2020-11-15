@@ -6,11 +6,16 @@ import {server} from './mocks/server'
 import {rest} from 'msw'
 import {SWRConfig} from 'swr'
 import {fetcher, getApiUrl} from './components/api'
+import {UserIdProvider} from './components/useUserId'
 
 const Wrapper: React.FC = ({children}) => {
     return (
         <DarkModeProvider>
-            <SWRConfig value={{dedupingInterval: 0, fetcher: fetcher, shouldRetryOnError: false}}>{children}</SWRConfig>
+            <UserIdProvider>
+                <SWRConfig value={{dedupingInterval: 0, fetcher: fetcher, shouldRetryOnError: false}}>
+                    {children}
+                </SWRConfig>
+            </UserIdProvider>
         </DarkModeProvider>
     )
 }

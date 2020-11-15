@@ -26,7 +26,7 @@ export const Input: React.FC = () => {
     const userId = useUserId()
 
     return (
-        <TaskContainer loading={loading}>
+        <TaskContainer isLoading={loading}>
             <InsertInput
                 placeholder="Insert a new task..."
                 type="search"
