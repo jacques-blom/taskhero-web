@@ -1,20 +1,14 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled, {css} from 'styled-components'
 import checkIconSvg from './check.svg'
 import {Card} from './Card'
+import {updateTask} from './api'
+import {useUserId} from './useUserId'
 
 export const TextStyle = css`
     font-size: 17px;
     color: ${(props) => props.theme.text};
     font-family: inherit;
-`
-
-export const Container = styled(Card)`
-    height: 50px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
 `
 
 const Check = styled.div<{checked: boolean}>`
@@ -33,6 +27,25 @@ const Check = styled.div<{checked: boolean}>`
         props.checked &&
         css`
             background-color: transparent;
+        `}
+`
+
+export const Container = styled(Card)<{loading?: boolean}>`
+    height: 50px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    ${(props) =>
+        props.loading &&
+        css`
+            pointer-events: none;
+            opacity: 0.5;
+
+            ${Check} {
+                cursor: initial;
+            }
         `}
 `
 
@@ -71,8 +84,29 @@ export type Task = {
 }
 
 export const Task: React.FC<{task: Task; testId: string}> = ({task, testId}) => {
+    const [loading, setLoading] = useState(false)
+    const userId = useUserId()
+
     return (
-        <Container onClick={() => {}} data-testid={testId}>
+        <Container
+            onClick={async () => {
+                setLoading(true)
+
+                try {
+                    await updateTask({
+                        userId,
+                        id: task.id,
+                        completed: !task.completed,
+                    })
+                } catch (error) {
+                    console.log(error)
+                }
+
+                setLoading(false)
+            }}
+            data-testid={testId}
+            loading={loading}
+        >
             <Check checked={task.completed}>
                 <CheckIcon src={checkIconSvg} style={{opacity: task.completed ? 1 : 0}} />
             </Check>

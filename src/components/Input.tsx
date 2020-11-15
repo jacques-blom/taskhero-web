@@ -1,8 +1,7 @@
 import React, {useState} from 'react'
 import styled from 'styled-components'
-import {mutate} from 'swr'
 import {insertTask} from './api'
-import {Container as TaskContainer, Task, TextStyle as TaskTextStyle} from './Task'
+import {Container as TaskContainer, TextStyle as TaskTextStyle} from './Task'
 import {useUserId} from './useUserId'
 
 const InsertInput = styled.input`
@@ -23,27 +22,32 @@ const InsertInput = styled.input`
 
 export const Input: React.FC = () => {
     const [label, setLabel] = useState('')
+    const [loading, setLoading] = useState(false)
     const userId = useUserId()
 
     return (
-        <TaskContainer>
+        <TaskContainer loading={loading}>
             <InsertInput
                 placeholder="Insert a new task..."
                 type="search"
                 autoComplete="off"
                 value={label}
+                disabled={loading}
                 onChange={({currentTarget}) => {
                     setLabel(currentTarget.value)
                 }}
                 onKeyUp={async ({keyCode}) => {
                     if (keyCode === 13) {
+                        setLoading(true)
+
                         try {
-                            const newTask = await insertTask({label, userId})
-                            await mutate(`/tasks/?userId=${userId}`, (tasks: Task[]) => [...tasks, newTask], false)
+                            await insertTask({label, userId})
                             setLabel('')
                         } catch (error) {
                             console.log('errr', error)
                         }
+
+                        setLoading(false)
                     }
                 }}
             />
