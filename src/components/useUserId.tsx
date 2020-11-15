@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import React, {createContext, useContext, useEffect, useState} from 'react'
 import {v4} from 'uuid'
 
 const getUserId = () => {
@@ -9,7 +9,9 @@ const getUserId = () => {
     }
 }
 
-export const useUserId = () => {
+const UserIdContext = createContext<string | null>(null)
+
+export const UserIdProvider: React.FC = ({children}) => {
     const [userId, setUserId] = useState(getUserId)
 
     useEffect(() => {
@@ -19,6 +21,13 @@ export const useUserId = () => {
             localStorage.setItem('userId', newUserId)
         }
     }, [userId])
+
+    return <UserIdContext.Provider value={userId}>{children}</UserIdContext.Provider>
+}
+
+export const useUserId = () => {
+    const userId = useContext(UserIdContext)
+    if (!userId) throw new Error('Cannot use userId outside of <UserIdProvider />')
 
     return userId
 }

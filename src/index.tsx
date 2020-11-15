@@ -4,6 +4,7 @@ import {SWRConfig} from 'swr'
 import App from './App'
 import {fetcher} from './components/api'
 import {DarkModeProvider} from './components/useDarkMode'
+import {UserIdProvider} from './components/useUserId'
 
 // if (process.env.NODE_ENV === 'development') {
 //     const {worker} = require('./mocks/browser')
@@ -14,7 +15,9 @@ ReactDOM.render(
     <React.StrictMode>
         <DarkModeProvider>
             <SWRConfig value={{fetcher}}>
-                <App />
+                <UserIdProvider>
+                    <App />
+                </UserIdProvider>
             </SWRConfig>
         </DarkModeProvider>
     </React.StrictMode>,

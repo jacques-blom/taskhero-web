@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import {mutate} from 'swr'
 import {insertTask} from './api'
 import {Container as TaskContainer, Task, TextStyle as TaskTextStyle} from './Task'
+import {useUserId} from './useUserId'
 
 const InsertInput = styled.input`
     width: 100%;
@@ -22,6 +23,7 @@ const InsertInput = styled.input`
 
 export const Input: React.FC = () => {
     const [label, setLabel] = useState('')
+    const userId = useUserId()
 
     return (
         <TaskContainer>
@@ -36,7 +38,7 @@ export const Input: React.FC = () => {
                 onKeyUp={async ({keyCode}) => {
                     if (keyCode === 13) {
                         try {
-                            const newTask = await insertTask({label})
+                            const newTask = await insertTask({label, userId})
                             await mutate('/tasks', (tasks: Task[]) => [...tasks, newTask], false)
                             setLabel('')
                         } catch (error) {}

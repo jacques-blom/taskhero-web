@@ -1,7 +1,6 @@
-import {fetcherFn} from 'swr/dist/types'
 import {Task} from './Task'
 
-type InsertTask = Pick<Task, 'label'>
+type InsertTask = Pick<Task, 'label'> & {userId: string}
 
 export const getApiUrl = (path: string) => {
     return `${process.env.REACT_APP_API_BASE}${path}`
