@@ -2,7 +2,7 @@ import {mutate} from 'swr'
 import {Task} from './Task'
 
 export const getApiUrl = (path: string) => {
-    return `${process.env.REACT_APP_API_BASE}${path}`
+    return `https://mqdyjsm1xd.execute-api.us-east-1.amazonaws.com/dev${path}`
 }
 
 export const fetcher = async (url: string) => {
@@ -19,16 +19,20 @@ export const fetcher = async (url: string) => {
     return res.json()
 }
 
-type InsertTask = Pick<Task, 'label'> & {userId: string}
+type InsertTask = Pick<Task, 'label' | 'userId'>
 
 export const insertTask = async (task: InsertTask) => {
-    const newTask = await fetch(getApiUrl('/tasks'), {method: 'POST', body: JSON.stringify(task)}).then((res) =>
-        res.json(),
-    )
-    await mutate(`/tasks/?userId=${task.userId}`, (tasks: Task[]) => [...tasks, newTask], false)
+    const response = await fetch(getApiUrl('/tasks'), {method: 'POST', body: JSON.stringify(task)})
+    const json = await response.json()
+
+    if (!response.ok) {
+        throw new Error(json.message)
+    }
+
+    await mutate(`/tasks/?userId=${task.userId}`, (tasks: Task[] = []) => [...tasks, json], false)
 }
 
-type UpdateTask = Pick<Task, 'completed' | 'id'> & {userId: string}
+type UpdateTask = Pick<Task, 'completed' | 'id' | 'userId'>
 
 export const updateTask = async (task: UpdateTask) => {
     const updatedTask = await fetch(getApiUrl(`/task/${task.id}`), {
@@ -38,7 +42,7 @@ export const updateTask = async (task: UpdateTask) => {
 
     await mutate(
         `/tasks/?userId=${task.userId}`,
-        (tasks: Task[]) => {
+        (tasks: Task[] = []) => {
             return tasks.map((t) => {
                 if (t.id === task.id) return updatedTask
                 return t

@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import {toast} from 'react-toastify'
 import styled from 'styled-components'
 import {insertTask} from './api'
 import {Container as TaskContainer, TextStyle as TaskTextStyle} from './Task'
@@ -26,25 +27,26 @@ export const Input: React.FC = () => {
     const userId = useUserId()
 
     return (
-        <TaskContainer isLoading={loading}>
+        <TaskContainer data-testid="container" isLoading={loading}>
             <InsertInput
                 placeholder="Insert a new task..."
                 type="search"
                 autoComplete="off"
                 value={label}
                 disabled={loading}
+                data-testid="input"
                 onChange={({currentTarget}) => {
                     setLabel(currentTarget.value)
                 }}
                 onKeyUp={async ({keyCode}) => {
-                    if (keyCode === 13) {
+                    if (keyCode === 13 && userId) {
                         setLoading(true)
 
                         try {
                             await insertTask({label, userId})
                             setLabel('')
                         } catch (error) {
-                            console.log('errr', error)
+                            toast.error(error.message, {toastId: 'insertError', autoClose: false})
                         }
 
                         setLoading(false)

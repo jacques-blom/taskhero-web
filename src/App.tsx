@@ -8,6 +8,9 @@ import useSWR from 'swr'
 import {useUserId} from './components/useUserId'
 
 const Home = () => {
+    // TODO: UI for error, loading, and empty
+    // TODO: UI for error messages
+
     const userId = useUserId()
     const {error, data} = useSWR<Task[]>(`/tasks/?userId=${userId}`)
 

@@ -78,9 +78,10 @@ const Strikethrough = styled.div<{checked: boolean}>`
 `
 
 export type Task = {
-    id: number
+    id: string
     label: string
     completed: boolean
+    userId: string
 }
 
 export const Task: React.FC<{task: Task; testId: string}> = ({task, testId}) => {
@@ -90,6 +91,8 @@ export const Task: React.FC<{task: Task; testId: string}> = ({task, testId}) => 
     return (
         <Container
             onClick={async () => {
+                if (!userId) return
+
                 setLoading(true)
 
                 try {
@@ -108,9 +111,9 @@ export const Task: React.FC<{task: Task; testId: string}> = ({task, testId}) => 
             isLoading={loading}
         >
             <Check checked={task.completed}>
-                <CheckIcon src={checkIconSvg} style={{opacity: task.completed ? 1 : 0}} />
+                <CheckIcon data-testid="checkIcon" src={checkIconSvg} style={{opacity: task.completed ? 1 : 0}} />
             </Check>
-            <Label>
+            <Label data-testid="label">
                 {task.label}
                 <Strikethrough checked={task.completed} />
             </Label>
