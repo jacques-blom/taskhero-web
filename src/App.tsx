@@ -1,27 +1,26 @@
 import React from 'react'
-import {Input} from './components/Input'
-import {ThemeProvider, GlobalStyles, Page} from './components/theme'
-import {Header} from './components/Header'
-import {useDarkMode} from './components/useDarkMode'
-import {Task} from './components/Task'
 import useSWR from 'swr'
+import {ErrorPage} from './components/ErrorPage'
+import {Input} from './components/Input'
+import {LoadingPage} from './components/LoadingPage'
+import {Page} from './components/Page'
+import {Subheading} from './components/Subheading'
+import {Task} from './components/Task'
+import {GlobalStyles, ThemeProvider} from './components/theme'
+import {useDarkMode} from './components/useDarkMode'
 import {useUserId} from './components/useUserId'
 
 const Home = () => {
-    // TODO: UI for error, loading, and empty
-    // TODO: UI for error messages
-
     const userId = useUserId()
-    const {error, data} = useSWR<Task[]>(`/tasks/?userId=${userId}`)
+    const {data, error} = useSWR<Task[]>(`/tasks/?userId=${userId}`)
 
-    if (error) return <div data-testid="error">Error: {error.message}</div>
-    if (!data) return <div data-testid="loading">Loading...</div>
+    if (error) return <ErrorPage message={error.message} />
+    if (!data) return <LoadingPage />
 
     return (
         <Page>
-            <Header />
             {data.length === 0 ? (
-                <div data-testid="notasks">No Tasks Yet</div>
+                <Subheading testId="notasks">No tasks yet</Subheading>
             ) : (
                 data.map((task) => {
                     return <Task testId={`task-${task.id}`} key={task.id} task={task} />

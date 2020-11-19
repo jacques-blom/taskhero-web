@@ -13,11 +13,11 @@ export const handlers = [
     }),
 
     rest.post(getApiUrl('/tasks'), (req, res, ctx) => {
-        if (typeof req.body !== 'string') throw new Error('No task specified')
+        if (typeof req.body !== 'string') throw new Error('Missing request body')
         const newTask = JSON.parse(req.body)
 
         if (newTask.label.length === 0) {
-            return res(ctx.status(400), ctx.json({message: 'No label specified'}))
+            return res(ctx.status(400), ctx.json({message: 'Missing label'}))
         }
 
         return res(ctx.status(200), ctx.json({id: '3', label: newTask.label, completed: false}))

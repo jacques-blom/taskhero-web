@@ -1,7 +1,7 @@
 import React from 'react'
-import styled, {ThemeProvider as StyledThemeProvider, createGlobalStyle} from 'styled-components'
+import {createGlobalStyle, DefaultTheme, ThemeProvider as StyledThemeProvider} from 'styled-components'
 
-export const colors = {
+export const colors: Record<'dark' | 'light', DefaultTheme> = {
     dark: {
         background: '#20252a',
         card: '#404348',
@@ -44,11 +44,3 @@ type ThemeProviderProps = {darkMode: boolean}
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({darkMode, children}) => {
     return <StyledThemeProvider theme={darkMode ? colors.dark : colors.light}>{children}</StyledThemeProvider>
 }
-
-export const Page = styled.div`
-    width: 100%;
-    max-width: 560px;
-    padding: 20px;
-    box-sizing: border-box;
-    margin: 0 auto;
-`

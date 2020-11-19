@@ -17,13 +17,3 @@ it('displays the task label', () => {
 
     expect(getByTestId('label')).toHaveTextContent('Hello')
 })
-
-// TODO:?
-
-// it('displays the ', () => {
-//     const {getByTestId} = render(<Task testId="task" task={mockTask} />, {
-//         wrapper: GlobalWrapper,
-//     })
-
-//     expect(getByTestId('task')).toHaveTextContent('Hello')
-// })

@@ -46,6 +46,7 @@ export const Input: React.FC = () => {
                             await insertTask({label, userId})
                             setLabel('')
                         } catch (error) {
+                            console.log('toast error', error)
                             toast.error(error.message, {toastId: 'insertError', autoClose: false})
                         }
 

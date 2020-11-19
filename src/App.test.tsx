@@ -26,8 +26,9 @@ it('handles the error state', async () => {
         }),
     )
 
-    const {findByTestId} = render(<App />, {wrapper: GlobalWrapper})
+    const {findByTestId, getByTestId} = render(<App />, {wrapper: GlobalWrapper})
     expect(await findByTestId('error')).toBeInTheDocument()
+    expect(getByTestId('errorMessage')).toHaveTextContent('Internal server error')
 })
 
 it('displays a list of todos', async () => {
@@ -94,9 +95,8 @@ it('inserts a new task', async () => {
     expect(task3.getByTestId('label')).toHaveTextContent('Test')
 })
 
-// TODO: Finish
 it('handles errors when inserting a task', async () => {
-    const {getByTestId} = render(<App />, {
+    const {getByTestId, getByRole} = render(<App />, {
         wrapper: GlobalWrapper,
     })
 
@@ -105,10 +105,6 @@ it('handles errors when inserting a task', async () => {
     userEvent.type(getByTestId('input'), '')
     fireEvent.keyUp(getByTestId('input'), {keyCode: 13})
 
-    // await wait(() => expect(getByTestId('task-3')).toBeInTheDocument())
-
-    // const task3 = within(getByTestId('task-3'))
-    // expect(task3.getByTestId('label')).toHaveTextContent('Test')
+    await wait(() => expect(getByRole('alert')).toBeInTheDocument())
+    expect(getByRole('alert')).toHaveTextContent('Missing label')
 })
-
-// TODO: Error handling tests for all API calls

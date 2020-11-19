@@ -1,4 +1,5 @@
 import React from 'react'
+import {ToastContainer} from 'react-toastify'
 import {SWRConfig} from 'swr'
 import {fetcher} from './components/api'
 import {DarkModeProvider} from './components/useDarkMode'
@@ -10,6 +11,7 @@ export const GlobalWrapper: React.FC = ({children}) => {
             <UserIdProvider>
                 <SWRConfig value={{dedupingInterval: 0, fetcher: fetcher, shouldRetryOnError: false}}>
                     {children}
+                    <ToastContainer />
                 </SWRConfig>
             </UserIdProvider>
         </DarkModeProvider>
