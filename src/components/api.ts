@@ -5,40 +5,37 @@ export const getApiUrl = (path: string) => {
     return `https://mqdyjsm1xd.execute-api.us-east-1.amazonaws.com/dev${path}`
 }
 
-export const fetcher = async (url: string) => {
-    const res = await fetch(getApiUrl(url))
+const customFetch = async (url: string, options?: RequestInit) => {
+    const res = await fetch(url, options)
+    const json = await res.json()
 
     // If the status code is not in the range 200-299,
     // we still try to parse and throw it.
     if (!res.ok) {
-        const errorJSON = await res.json()
-        const error = new Error(errorJSON?.errorMessage || 'Unknown error')
+        const error = new Error(json?.message || 'Unknown error')
         throw error
     }
 
-    return res.json()
+    return json
+}
+
+export const fetcher = (url: string) => customFetch(getApiUrl(url))
+
+const post = async (url: string, {body}: {body: object}) => {
+    return customFetch(url, {method: 'POST', body: JSON.stringify(body)})
 }
 
 type InsertTask = Pick<Task, 'label' | 'userId'>
 
 export const insertTask = async (task: InsertTask) => {
-    const response = await fetch(getApiUrl('/tasks'), {method: 'POST', body: JSON.stringify(task)})
-    const json = await response.json()
-
-    if (!response.ok) {
-        throw new Error(json.message)
-    }
-
-    await mutate(`/tasks/?userId=${task.userId}`, (tasks: Task[] = []) => [...tasks, json], false)
+    const newTask = await post(getApiUrl('/tasks'), {body: task})
+    await mutate(`/tasks/?userId=${task.userId}`, (tasks: Task[] = []) => [...tasks, newTask], false)
 }
 
 type UpdateTask = Pick<Task, 'completed' | 'id' | 'userId'>
 
 export const updateTask = async (task: UpdateTask) => {
-    const updatedTask = await fetch(getApiUrl(`/task/${task.id}`), {
-        method: 'POST',
-        body: JSON.stringify(task),
-    }).then((res) => res.json())
+    const updatedTask = await post(getApiUrl(`/task/${task.id}`), {body: task})
 
     await mutate(
         `/tasks/?userId=${task.userId}`,

@@ -4,6 +4,7 @@ import checkIconSvg from './check.svg'
 import {Card} from './Card'
 import {updateTask} from './api'
 import {useUserId} from './useUserId'
+import {toast} from 'react-toastify'
 
 export const TextStyle = css`
     font-size: 17px;
@@ -102,7 +103,7 @@ export const Task: React.FC<{task: Task; testId: string}> = ({task, testId}) => 
                         completed: !task.completed,
                     })
                 } catch (error) {
-                    console.log(error)
+                    toast.error(error.message)
                 }
 
                 setLoading(false)
