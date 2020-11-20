@@ -14,6 +14,7 @@ export const handlers = [
 
     rest.post(getApiUrl('/tasks'), (req, res, ctx) => {
         if (typeof req.body !== 'string') throw new Error('Missing request body')
+
         const newTask = JSON.parse(req.body)
 
         if (newTask.label.length === 0) {
