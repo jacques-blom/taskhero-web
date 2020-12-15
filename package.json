@@ -49,6 +49,7 @@
         "@testing-library/react-hooks": "^3.4.2",
         "express": "^4.17.1",
         "jest-localstorage-mock": "^2.4.3",
+        "msw": "^0.24.2",
         "prettier": "^2.0.5",
         "react-test-renderer": "^16.13.1"
     }
