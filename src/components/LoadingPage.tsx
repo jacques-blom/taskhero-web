@@ -14,7 +14,7 @@ export const LoadingPage: React.FC = () => {
     const theme = useTheme()
 
     return (
-        <Container data-testid="loading">
+        <Container aria-live="polite" role="alert" aria-label="loading">
             <Spinner radius={45} color={theme.text} stroke={4} visible />
         </Container>
     )

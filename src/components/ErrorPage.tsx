@@ -6,7 +6,9 @@ export const ErrorPage = ({message}: {message: string}) => {
     return (
         <Page testId="error">
             <Subheading>Error</Subheading>
-            <div data-testid="errorMessage">{message}</div>
+            <div role="alert" aria-label={message}>
+                {message}
+            </div>
         </Page>
     )
 }

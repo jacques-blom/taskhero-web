@@ -9,7 +9,7 @@ const getUserId = () => {
     }
 }
 
-const UserIdContext = createContext<string | null | undefined>(undefined)
+const UserIdContext = createContext<string | null>(null)
 
 export const UserIdProvider: React.FC = ({children}) => {
     const [userId, setUserId] = useState(getUserId)
@@ -26,8 +26,5 @@ export const UserIdProvider: React.FC = ({children}) => {
 }
 
 export const useUserId = () => {
-    const userId = useContext(UserIdContext)
-    if (userId === undefined) throw new Error('Cannot use userId outside of <UserIdProvider />')
-
-    return userId
+    return useContext(UserIdContext)
 }

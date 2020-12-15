@@ -20,7 +20,7 @@ const Home = () => {
     return (
         <Page>
             {data.length === 0 ? (
-                <Subheading testId="notasks">No tasks yet</Subheading>
+                <Subheading>No tasks yet</Subheading>
             ) : (
                 data.map((task) => {
                     return <Task testId={`task-${task.id}`} key={task.id} task={task} />
