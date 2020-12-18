@@ -9,7 +9,7 @@ export const GlobalWrapper: React.FC = ({children}) => {
     return (
         <DarkModeProvider>
             <UserIdProvider>
-                <SWRConfig value={{dedupingInterval: 0, fetcher: fetcher, shouldRetryOnError: false}}>
+                <SWRConfig value={{fetcher: fetcher, shouldRetryOnError: false}}>
                     {children}
                     <ToastContainer />
                 </SWRConfig>
