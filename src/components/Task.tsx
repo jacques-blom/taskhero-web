@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import styled, {css} from 'styled-components'
 import checkIconSvg from './check.svg'
-import {Card} from './Card'
+import {card} from './Card'
 import {updateTask} from './api'
 import {useUserId} from './useUserId'
 import {toast} from 'react-toastify'
@@ -22,7 +22,8 @@ const Check = styled.div<{checked: boolean}>`
     justify-content: center;
     display: flex;
     background-color: ${(props) => props.theme.background};
-    cursor: pointer;
+    box-sizing: border-box;
+    border: 1px solid transparent;
 
     ${(props) =>
         props.checked &&
@@ -31,19 +32,23 @@ const Check = styled.div<{checked: boolean}>`
         `}
 `
 
-export const Container = styled(Card)<{isLoading?: boolean}>`
-    height: 50px;
-    margin-bottom: 20px;
+const HTMLCheckbox = styled.input`
+    :focus + ${Check} {
+        box-shadow: 0 0 0 1px #00e0e6;
+    }
+`
+
+export const Container = styled.div`
+    ${card}
     display: flex;
     flex-direction: row;
     align-items: center;
+    width: 100%;
+    cursor: pointer;
 
     ${(props) =>
-        props.isLoading &&
+        props.disabled &&
         css`
-            pointer-events: none;
-            opacity: 0.5;
-
             ${Check} {
                 cursor: initial;
             }
@@ -52,6 +57,7 @@ export const Container = styled(Card)<{isLoading?: boolean}>`
 
 const CheckIcon = styled.img`
     transition: 0.1s opacity ease-in-out;
+    width: 12px;
 `
 
 const Label = styled.div`
@@ -89,31 +95,39 @@ export const Task: React.FC<{task: Task; testId: string}> = ({task, testId}) => 
     const [loading, setLoading] = useState(false)
     const userId = useUserId()
 
+    const updateCompleted = async (completed: boolean) => {
+        if (!userId) return
+
+        setLoading(true)
+
+        try {
+            await updateTask({
+                userId,
+                id: task.id,
+                completed,
+            })
+        } catch (error) {
+            toast.error(error.message)
+        }
+
+        setLoading(false)
+    }
+
     return (
-        <Container
-            onClick={async () => {
-                if (!userId) return
-
-                setLoading(true)
-
-                try {
-                    await updateTask({
-                        userId,
-                        id: task.id,
-                        completed: !task.completed,
-                    })
-                } catch (error) {
-                    toast.error(error.message)
-                }
-
-                setLoading(false)
-            }}
-            data-testid={testId}
-            isLoading={loading}
-        >
-            <Check checked={task.completed}>
-                <CheckIcon data-testid="checkIcon" src={checkIconSvg} style={{opacity: task.completed ? 1 : 0}} />
-            </Check>
+        <Container data-testid={testId} disabled={loading}>
+            <label style={{position: 'relative'}}>
+                <HTMLCheckbox
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={(event) => updateCompleted(event.target.checked)}
+                    style={{opacity: 0, position: 'absolute'}}
+                    aria-label={task.completed ? 'mark as uncompleted' : 'mark as completed'}
+                    disabled={loading}
+                />
+                <Check checked={task.completed}>
+                    <CheckIcon data-testid="checkIcon" src={checkIconSvg} style={{opacity: task.completed ? 1 : 0}} />
+                </Check>
+            </label>
             <Label data-testid="label">
                 {task.label}
                 <Strikethrough checked={task.completed} />

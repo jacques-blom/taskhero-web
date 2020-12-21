@@ -2,8 +2,13 @@ import React, {useState} from 'react'
 import {toast} from 'react-toastify'
 import styled from 'styled-components'
 import {insertTask} from './api'
-import {Container as TaskContainer, TextStyle as TaskTextStyle} from './Task'
+import {card} from './Card'
+import {TextStyle as TaskTextStyle} from './Task'
 import {useUserId} from './useUserId'
+
+const Container = styled.div`
+    ${card}
+`
 
 const InsertInput = styled.input`
     width: 100%;
@@ -27,14 +32,14 @@ export const Input: React.FC = () => {
     const userId = useUserId()
 
     return (
-        <TaskContainer data-testid="container" isLoading={loading}>
+        <Container data-testid="container" disabled={loading}>
             <InsertInput
                 placeholder="Insert a new task..."
-                type="search"
+                type="text"
                 autoComplete="off"
                 value={label}
                 disabled={loading}
-                data-testid="input"
+                aria-label="Insert new task"
                 onChange={({currentTarget}) => {
                     setLabel(currentTarget.value)
                 }}
@@ -46,7 +51,6 @@ export const Input: React.FC = () => {
                             await insertTask({label, userId})
                             setLabel('')
                         } catch (error) {
-                            console.log('toast error', error)
                             toast.error(error.message, {toastId: 'insertError', autoClose: false})
                         }
 
@@ -54,6 +58,6 @@ export const Input: React.FC = () => {
                     }
                 }}
             />
-        </TaskContainer>
+        </Container>
     )
 }
